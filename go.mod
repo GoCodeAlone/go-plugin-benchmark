@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/go-hclog v1.6.3
 	github.com/hashicorp/go-plugin v1.7.0
 	github.com/natefinch/pie v0.0.0-20170715172608-9a0d72014007
-	github.com/pkujhd/goloader v0.0.23
+	github.com/pkujhd/goloader v0.0.24-0.20260211091157-860e2b19f73f
 	github.com/tetratelabs/wazero v1.11.0
 	github.com/traefik/yaegi v0.16.1
 	google.golang.org/grpc v1.79.1
@@ -31,5 +31,3 @@ require (
 	golang.org/x/text v0.34.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260217215200-42d3e9bedb6d // indirect
 )
-
-replace github.com/pkujhd/goloader => ./local/goloader
