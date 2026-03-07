@@ -4,6 +4,7 @@ import (
 	"cmd/objfile/sys"
 	"encoding/binary"
 	"fmt"
+	"math"
 	"runtime"
 	"strconv"
 	"strings"
@@ -191,7 +192,7 @@ func preprocessSymbol(byteOrder binary.ByteOrder, name string, bytes []byte) err
 	}
 	switch name[:5] {
 	case "$f32.":
-		if uint64(uint32(val)) != val {
+		if val > math.MaxUint32 {
 			return fmt.Errorf("$-symbol %s too large: %d", name, val)
 		}
 		byteOrder.PutUint32(bytes, uint32(val))

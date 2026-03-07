@@ -32,9 +32,9 @@ func resolveSymRefName(refname string, packages map[string]*Pkg, pkgPath string,
 	}
 	cache[refname] = constants.EmptyString
 	splits := strings.Split(refname, "#")
-	pkgidx, _ := strconv.Atoi(splits[1])
-	symidx, _ := strconv.Atoi(splits[2])
-	ref := goobj.SymRef{PkgIdx: uint32(pkgidx), SymIdx: uint32(symidx)}
+	pkgidxU, _ := strconv.ParseUint(splits[1], 10, 32)
+	symidxU, _ := strconv.ParseUint(splits[2], 10, 32)
+	ref := goobj.SymRef{PkgIdx: uint32(pkgidxU), SymIdx: uint32(symidxU)}
 	goArchive := packages[pkgPath].GoArchive
 	r := goArchive.entries[entryId].r
 	symIndex := packages[pkgPath].SymIndex[goArchive.entries[entryId].startIndex:]
