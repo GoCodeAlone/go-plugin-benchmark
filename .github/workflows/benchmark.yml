@@ -25,10 +25,6 @@ jobs:
         run: |
           # Update actively-maintained direct dependencies individually so a
           # failure on any one package is logged but does not block the rest.
-          # pkujhd/goloader is excluded: it references cmd/objfile/* internal
-          # packages that cannot be resolved outside the Docker build environment,
-          # so `go get -u` would fail. The Dockerfile's `cp -r cmd/internal …`
-          # workaround handles it at build time instead.
           PKGS=(
             github.com/GoCodeAlone/go-plugin
             github.com/GoCodeAlone/yaegi

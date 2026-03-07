@@ -17,7 +17,6 @@ BENCH_TO_ROW_PATTERN: dict[str, str] = {
     "plug":                 r"github\.com/elliotmr/plug",
     "yaegi":                r"github\.com/traefik/yaegi",
     "gocodalone-yaegi":     r"github\.com/GoCodeAlone/yaegi",
-    "goloader":             r"github\.com/pkujhd/goloader",
     "wazero":               r"github\.com/tetratelabs/wazero",
 }
 
