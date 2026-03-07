@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package randint;
+option go_package = "github.com/uberswe/go-plugin-benchmark/gocodalone-go-plugin/proto";
+
+message RandIntRequest {}
+
+message RandIntResponse {
+    int64 value = 1;
+}
+
+service RandIntService {
+    rpc RandInt(RandIntRequest) returns (RandIntResponse);
+}
