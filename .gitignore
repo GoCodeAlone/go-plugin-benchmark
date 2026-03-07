@@ -4,3 +4,8 @@ pieplugin
 pingoplugin
 plugplugin
 goloader.o
+gocodalonegoplugin
+wazero.wasm
+importcfg
+__pycache__/
+*.pyc
