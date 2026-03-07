@@ -5,7 +5,7 @@ import (
 	"os"
 
 	gocplugin "github.com/GoCodeAlone/go-plugin"
-	"github.com/GoCodeAlone/go-plugin-benchmark/gocodalone-go-plugin/shared"
+	"github.com/uberswe/go-plugin-benchmark/gocodalone-go-plugin/shared"
 	"github.com/hashicorp/go-hclog"
 )
 

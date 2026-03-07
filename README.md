@@ -4,21 +4,23 @@ A comparison of the [go plugin package](https://golang.org/pkg/plugin/) and othe
 
 ## Benchmarks
 
-| Name                                                          | Operations (higher is better) | ns/op (lower is better) |    type     |
-|---------------------------------------------------------------|:-----------------------------:|------------------------:|:-----------:|
-| [go plugin package](https://golang.org/pkg/plugin/)           |           44219324            |             30.35 ns/op |   native    |
-| [hashicorp/go-plugin](https://github.com/hashicorp/go-plugin) |             3682              |            413257 ns/op |     rpc     |
-| [natefinch/pie](https://github.com/natefinch/pie)             |             3933              |            328025 ns/op |     rpc     |
-| [dullgiulio/pingo](https://github.com/dullgiulio/pingo)       |             4197              |            329354 ns/op |     tcp     |
-| [dullgiulio/pingo](https://github.com/dullgiulio/pingo)       |             3110              |            465628 ns/op |    unix     |
-| [elliotmr/plug](https://github.com/elliotmr/plug)             |             7998              |            162677 ns/op |     ipc     |
-| [traefik/yaegi](https://github.com/traefik/yaegi)             |            1000000            |              1184 ns/op | interpreter |
-| [pkujhd/goloader](https://github.com/pkujhd/goloader)         |           68201743            |             19.11 ns/op |   native    |
-| [tetratelabs/wazero](https://github.com/tetratelabs/wazero)   |           11401358            |             105.0 ns/op |   native    |
+| Name                                                                              | Operations (higher is better) | ns/op (lower is better) |    type     |
+|-----------------------------------------------------------------------------------|:-----------------------------:|------------------------:|:-----------:|
+| [go plugin package](https://golang.org/pkg/plugin/)                               |           44219324            |             30.35 ns/op |   native    |
+| [hashicorp/go-plugin](https://github.com/hashicorp/go-plugin)                     |             3682              |            413257 ns/op |     rpc     |
+| [GoCodeAlone/go-plugin](https://github.com/GoCodeAlone/go-plugin)                 |             TBD               |                     TBD |    grpc     |
+| [natefinch/pie](https://github.com/natefinch/pie)                                 |             3933              |            328025 ns/op |     rpc     |
+| [dullgiulio/pingo](https://github.com/dullgiulio/pingo)                           |             4197              |            329354 ns/op |     tcp     |
+| [dullgiulio/pingo](https://github.com/dullgiulio/pingo)                           |             3110              |            465628 ns/op |    unix     |
+| [elliotmr/plug](https://github.com/elliotmr/plug)                                 |             7998              |            162677 ns/op |     ipc     |
+| [traefik/yaegi](https://github.com/traefik/yaegi)                                 |            1000000            |              1184 ns/op | interpreter |
+| [GoCodeAlone/yaegi](https://github.com/GoCodeAlone/yaegi)                         |             TBD               |                     TBD | interpreter |
+| [pkujhd/goloader](https://github.com/pkujhd/goloader)                             |           68201743            |             19.11 ns/op |   native    |
+| [tetratelabs/wazero](https://github.com/tetratelabs/wazero)                       |           11401358            |             105.0 ns/op |   native    |
  
 Several of the other packages use RPC or similar methods instead of the go plugin package which gets around issues such as, but not limited to, [not being compatible with Windows](https://github.com/golang/go/issues/19282) and [package paths and GOPATH needing to be the same between apps and plugins](https://github.com/golang/go/issues/20481).
 
-With the addition of [Yaegi](https://github.com/traefik/yaegi), I am also benchmarking interpreters. 
+With the addition of [Yaegi](https://github.com/traefik/yaegi) and [GoCodeAlone/yaegi](https://github.com/GoCodeAlone/yaegi), I am also benchmarking interpreters.
 
 **Do you know any other plugin packages?** Please open an [issue](https://github.com/uberswe/go-plugin-benchmark/issues/new) or pull request.
 

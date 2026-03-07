@@ -1,7 +1,19 @@
 package benchmark
 
 import (
+	"context"
 	"fmt"
+	"net/rpc/jsonrpc"
+	"os"
+	"os/exec"
+	"plugin"
+	"runtime"
+	"testing"
+	"unsafe"
+
+	gocplugin "github.com/GoCodeAlone/go-plugin"
+	gcyaegiinterp "github.com/GoCodeAlone/yaegi/interp"
+	gcyaegistdlib "github.com/GoCodeAlone/yaegi/stdlib"
 	"github.com/dullgiulio/pingo"
 	"github.com/hashicorp/go-hclog"
 	hashicorpplugin "github.com/hashicorp/go-plugin"
@@ -11,15 +23,8 @@ import (
 	"github.com/tetratelabs/wazero/imports/wasi_snapshot_preview1"
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
+	"github.com/uberswe/go-plugin-benchmark/gocodalone-go-plugin/shared"
 	plugplugin "github.com/uberswe/go-plugin-benchmark/plug"
-	"context"
-	"net/rpc/jsonrpc"
-	"os"
-	"os/exec"
-	"plugin"
-	"runtime"
-	"testing"
-	"unsafe"
 )
 
 // BenchmarkPluginRandInt uses a go plugin and tests math/rand for generating random integers
@@ -242,6 +247,69 @@ func BenchmarkWazeroRandInt(b *testing.B) {
 				fmt.Println("failed to call function:", err)
 				return
 			}
+		}
+	})
+}
+
+func BenchmarkGoCodeAloneGoPluginRandInt(b *testing.B) {
+	logger := hclog.New(&hclog.LoggerOptions{
+		Name:   "plugin",
+		Output: os.Stdout,
+		Level:  hclog.Off,
+	})
+
+	client := gocplugin.NewClient(&gocplugin.ClientConfig{
+		HandshakeConfig: shared.Handshake,
+		Plugins:         shared.PluginMap,
+		Cmd:             exec.Command("./gocodalonegoplugin"),
+		Logger:          logger,
+		AllowedProtocols: []gocplugin.Protocol{
+			gocplugin.ProtocolGRPC,
+		},
+	})
+	defer client.Kill()
+
+	rpcClient, err := client.Client()
+	if err != nil {
+		panic(err)
+	}
+
+	raw, err := rpcClient.Dispense("randint_grpc")
+	if err != nil {
+		panic(err)
+	}
+
+	randIntProvider := raw.(shared.RandIntProvider)
+	b.Run("gocodalone-go-plugin", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			randIntProvider.RandInt()
+		}
+	})
+}
+
+func BenchmarkGoCodeAloneYaegiRandInt(b *testing.B) {
+	var src = `package test
+import "math/rand"
+func RandInt(i int) int { return rand.Int() }`
+
+	i := gcyaegiinterp.New(gcyaegiinterp.Options{})
+
+	i.Use(gcyaegistdlib.Symbols)
+
+	_, err := i.Eval(src)
+	if err != nil {
+		panic(err)
+	}
+
+	v, err := i.Eval("test.RandInt")
+	if err != nil {
+		panic(err)
+	}
+
+	randIntFunc := v.Interface().(func(int) int)
+	b.Run("gocodalone-yaegi", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			_ = randIntFunc(1)
 		}
 	})
 }

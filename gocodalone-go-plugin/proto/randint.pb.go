@@ -110,7 +110,7 @@ const file_randint_proto_rawDesc = "" +
 	"\x0fRandIntResponse\x12\x14\n" +
 	"\x05value\x18\x01 \x01(\x03R\x05value2N\n" +
 	"\x0eRandIntService\x12<\n" +
-	"\aRandInt\x12\x17.randint.RandIntRequest\x1a\x18.randint.RandIntResponseBGZEgithub.com/GoCodeAlone/go-plugin-benchmark/gocodalone-go-plugin/protob\x06proto3"
+	"\aRandInt\x12\x17.randint.RandIntRequest\x1a\x18.randint.RandIntResponseBCZAgithub.com/uberswe/go-plugin-benchmark/gocodalone-go-plugin/protob\x06proto3"
 
 var (
 	file_randint_proto_rawDescOnce sync.Once

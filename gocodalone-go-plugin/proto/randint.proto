@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package randint;
-option go_package = "github.com/GoCodeAlone/go-plugin-benchmark/gocodalone-go-plugin/proto";
+option go_package = "github.com/uberswe/go-plugin-benchmark/gocodalone-go-plugin/proto";
 
 message RandIntRequest {}
 

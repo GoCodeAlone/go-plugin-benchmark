@@ -4,7 +4,7 @@ import (
 	"context"
 
 	gocplugin "github.com/GoCodeAlone/go-plugin"
-	"github.com/GoCodeAlone/go-plugin-benchmark/gocodalone-go-plugin/proto"
+	"github.com/uberswe/go-plugin-benchmark/gocodalone-go-plugin/proto"
 	"google.golang.org/grpc"
 )
 
