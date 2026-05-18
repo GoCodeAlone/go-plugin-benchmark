@@ -9,7 +9,6 @@ import (
 	"plugin"
 	"runtime"
 	"testing"
-	"unsafe"
 
 	gocplugin "github.com/GoCodeAlone/go-plugin"
 	gcyaegiinterp "github.com/GoCodeAlone/yaegi/interp"
@@ -18,7 +17,6 @@ import (
 	"github.com/hashicorp/go-hclog"
 	hashicorpplugin "github.com/hashicorp/go-plugin"
 	"github.com/natefinch/pie"
-	"github.com/pkujhd/goloader"
 	"github.com/tetratelabs/wazero"
 	"github.com/tetratelabs/wazero/imports/wasi_snapshot_preview1"
 	"github.com/traefik/yaegi/interp"
@@ -182,44 +180,6 @@ func RandInt(i int) int { return rand.Int() }`
 	})
 }
 
-func BenchmarkGoloaderRandInt(b *testing.B) {
-	linker, err := goloader.ReadObjs([]string{"goloader.o"}, []string{"main"})
-	if err != nil {
-		b.Error(err)
-		return
-	}
-
-	run := "main.RandInt"
-
-	symPtr := make(map[string]uintptr)
-	err = goloader.RegSymbol(symPtr)
-	if err != nil {
-		b.Error(err)
-		return
-	}
-
-	b.Run("goloader", func(b *testing.B) {
-		codeModule, err := goloader.Load(linker, symPtr)
-		if err != nil {
-			fmt.Println("Load error:", err)
-			return
-		}
-		runFuncPtr, ok := codeModule.Syms[run]
-		if !ok || runFuncPtr == 0 {
-			fmt.Println("Load error! not find function:", run)
-			return
-		}
-		funcPtrContainer := (uintptr)(unsafe.Pointer(&runFuncPtr))
-		runFunc := *(*func() int)(unsafe.Pointer(&funcPtrContainer))
-		for i := 0; i < b.N; i++ {
-			_ = runFunc()
-		}
-
-		os.Stdout.Sync()
-		codeModule.Unload()
-	})
-}
-
 func BenchmarkWazeroRandInt(b *testing.B) {
 	wasmFile, err := os.ReadFile("wazero.wasm")
 	if err != nil {
@@ -233,11 +193,23 @@ func BenchmarkWazeroRandInt(b *testing.B) {
 
 	wasi_snapshot_preview1.MustInstantiate(ctx, runtime)
 
-	module, err := runtime.Instantiate(ctx, wasmFile)
+	compiledModule, err := runtime.CompileModule(ctx, wasmFile)
+	if err != nil {
+		fmt.Println("failed to compile module:", err)
+		return
+	}
+
+	// WithStartFunctions() with no arguments skips the auto-start (_start)
+	// entry point so the WASI module stays alive for repeated RandInt calls.
+	// Without this, TinyGo's _start calls main() and then proc_exit(0),
+	// closing the module before any benchmark iterations can complete.
+	cfg := wazero.NewModuleConfig().WithStartFunctions()
+	module, err := runtime.InstantiateModule(ctx, compiledModule, cfg)
 	if err != nil {
 		fmt.Println("failed to instantiate module:", err)
 		return
 	}
+	defer module.Close(ctx)
 
 	b.Run("wazero", func(b *testing.B) {
 		randIntFunction := module.ExportedFunction("RandInt")

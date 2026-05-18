@@ -6,17 +6,17 @@ A comparison of the [go plugin package](https://golang.org/pkg/plugin/) and othe
 
 | Name                                                                              | Operations (higher is better) | ns/op (lower is better) |    type     |
 |-----------------------------------------------------------------------------------|:-----------------------------:|------------------------:|:-----------:|
-| [go plugin package](https://golang.org/pkg/plugin/)                               |           44219324            |             30.35 ns/op |   native    |
-| [hashicorp/go-plugin](https://github.com/hashicorp/go-plugin)                     |             3682              |            413257 ns/op |     rpc     |
-| [GoCodeAlone/go-plugin](https://github.com/GoCodeAlone/go-plugin)                 |             TBD               |                     TBD |    grpc     |
-| [natefinch/pie](https://github.com/natefinch/pie)                                 |             3933              |            328025 ns/op |     rpc     |
-| [dullgiulio/pingo](https://github.com/dullgiulio/pingo)                           |             4197              |            329354 ns/op |     tcp     |
-| [dullgiulio/pingo](https://github.com/dullgiulio/pingo)                           |             3110              |            465628 ns/op |    unix     |
-| [elliotmr/plug](https://github.com/elliotmr/plug)                                 |             7998              |            162677 ns/op |     ipc     |
-| [traefik/yaegi](https://github.com/traefik/yaegi)                                 |            1000000            |              1184 ns/op | interpreter |
-| [GoCodeAlone/yaegi](https://github.com/GoCodeAlone/yaegi)                         |             TBD               |                     TBD | interpreter |
-| [pkujhd/goloader](https://github.com/pkujhd/goloader)                             |           68201743            |             19.11 ns/op |   native    |
-| [tetratelabs/wazero](https://github.com/tetratelabs/wazero)                       |           11401358            |             105.0 ns/op |   native    |
+| [go plugin package](https://golang.org/pkg/plugin/)                               |     466388373 |       12.90 ns/op |   native    |
+| [hashicorp/go-plugin](https://github.com/hashicorp/go-plugin)                     |         42607 |      137687 ns/op |     rpc     |
+| [GoCodeAlone/go-plugin](https://github.com/GoCodeAlone/go-plugin)                 |         36901 |      162668 ns/op |    grpc     |
+| [natefinch/pie](https://github.com/natefinch/pie)                                 |         66715 |       89390 ns/op |     rpc     |
+| [dullgiulio/pingo](https://github.com/dullgiulio/pingo)                           |         51844 |      114880 ns/op |     tcp     |
+| [dullgiulio/pingo](https://github.com/dullgiulio/pingo)                           |         55180 |      108367 ns/op |    unix     |
+| [elliotmr/plug](https://github.com/elliotmr/plug)                                 |        180102 |       32750 ns/op |     ipc     |
+| [traefik/yaegi](https://github.com/traefik/yaegi)                                 |       6725710 |       895.6 ns/op | interpreter |
+| [GoCodeAlone/yaegi](https://github.com/GoCodeAlone/yaegi)                         |       6666477 |       901.1 ns/op | interpreter |
+| [pkujhd/goloader](https://github.com/pkujhd/goloader) [¹](#goloader-note)         |             N/A               |                     N/A |   native    |
+| [tetratelabs/wazero](https://github.com/tetratelabs/wazero)                       |      32659566 |       184.4 ns/op |   native    |
  
 Several of the other packages use RPC or similar methods instead of the go plugin package which gets around issues such as, but not limited to, [not being compatible with Windows](https://github.com/golang/go/issues/19282) and [package paths and GOPATH needing to be the same between apps and plugins](https://github.com/golang/go/issues/20481).
 
@@ -46,7 +46,7 @@ docker run go-plugin-benchmark:local
 
 Most plugins tested are using RPC which adds about 30 - 50 microseconds to plugin calls (or 0.03 - 0.05 milliseconds) over the golang plugin package.
 
-The [goloader](https://github.com/pkujhd/goloader) package is interesting and may provide a good alternative to the go plugin package. One drawback is that it uses internal packages which requires renaming the internal folder locally and I have not tested compatibility to see if it solves the problems with the go plugin package.
+<a name="goloader-note"></a>¹ The [goloader](https://github.com/pkujhd/goloader) package is interesting and may provide a good alternative to the go plugin package. One drawback is that it uses internal packages which requires renaming the internal folder locally and I have not tested compatibility to see if it solves the problems with the go plugin package. **Note: goloader is currently excluded from benchmarks because it relies on `//go:linkname` access to unexported `runtime` symbols that are no longer accessible in Go 1.26.1.**
 
 ## Contributing
 
